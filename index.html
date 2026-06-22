@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>KIP Kuliah · UTDI</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/admisi-utdi/assets/main/UTDI%201B.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: inherit; }
+    :root {
+      --merah: #B72818; --mint: #ADEEC5; --oranye: #FFA213;
+      --biru: #4B75FF; --ungu: #130358;
+      --putih: #ffffff; --abu1: #f5f6fa; --abu2: #e2e4ea;
+      --abu3: #8e8ea0; --abu4: #4a4a5a;
+      --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    html, body { background: var(--putih); color: var(--ungu); font-family: var(--font); -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    body { padding-bottom: 0; }
+    a { text-decoration: none; color: inherit; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 0 20px; box-sizing: border-box; overflow: hidden; }
+
+    #loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; gap: 16px; }
+    .loader { width: 40px; height: 40px; border: 3px solid var(--abu2); border-top-color: var(--biru); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    #loading p { color: var(--abu3); font-size: 0.95rem; }
+    #app { display: none; }
+
+    nav { position: sticky; top: 0; z-index: 1000; background: var(--ungu); display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid rgba(255,255,255,0.08); box-shadow: 0 2px 12px rgba(19,3,88,0.3); }
+    .nav-title { font-weight: 700; font-size: 1rem; color: #fff; }
+    .nav-sub { font-size: 0.7rem; color: rgba(255,255,255,0.5); letter-spacing: 0.02em; }
+
+    #scale-wrap { width: 100%; max-width: 100vw; overflow-x: hidden; padding-bottom: 90px; }
+
+    .section { padding: 48px 0; }
+    .section + .section { border-top: 1px solid var(--abu2); }
+
+    .label { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 14px; border-radius: 20px; background: var(--abu1); color: var(--abu4); }
+    .label.merah { background: var(--merah); color: #fff; }
+    .label.mint { background: var(--mint); color: var(--ungu); }
+    .label.oranye { background: var(--oranye); color: var(--ungu); }
+    .label.biru { background: var(--biru); color: #fff; }
+    .label.ungu { background: var(--ungu); color: #fff; }
+
+    h2 { font-size: 1.75rem; font-weight: 800; line-height: 1.2; margin-top: 8px; color: var(--ungu); }
+    .sub { color: var(--abu3); font-size: 0.9375rem; font-family: var(--font); margin-top: 4px; line-height: 1.6; }
+
+    .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--oranye); color: var(--ungu); font-weight: 700; padding: 12px 28px; border-radius: 40px; font-size: 1rem; border: none; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(255,162,19,0.25); margin-top: 24px; font-family: var(--font); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,162,19,0.35); }
+
+    .hero { text-align: center; padding: 24px 0 40px; background: var(--putih); overflow: hidden; }
+    .hero h1 { font-size: 2.4rem; font-weight: 900; line-height: 1.1; margin: 16px 0 8px; }
+    .hero h1 span { color: var(--merah); }
+    .hero .tagline { font-size: 1rem; font-family: var(--font); color: var(--abu3); max-width: 32rem; margin: 0 auto; line-height: 1.6; }
+    .hero-desc { font-size: 0.9375rem; color: var(--abu4); line-height: 1.7; margin-top: 10px; }
+
+    .card-kip { width: 100%; max-width: 280px; margin: 28px auto 0; aspect-ratio: 1.58/1; background: linear-gradient(145deg, var(--ungu), #26157a); border-radius: 20px; padding: 18px 20px 16px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 16px 40px -8px rgba(19,3,88,0.3); border: 1px solid rgba(255,255,255,0.06); }
+    .card-kip .chip { width: 32px; height: 20px; background: var(--oranye); border-radius: 4px; position: relative; }
+    .card-kip .chip::after { content: ''; position: absolute; left: 4px; right: 4px; top: 7px; height: 2px; background: rgba(0,0,0,0.2); box-shadow: 0 5px 0 rgba(0,0,0,0.2); }
+    .card-kip .row { display: flex; justify-content: space-between; align-items: flex-start; }
+    .card-kip .brand { font-size: 0.65rem; font-weight: 600; color: rgba(255,255,255,0.5); }
+    .card-kip .mid .lbl { font-size: 0.5rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgba(255,255,255,0.35); }
+    .card-kip .mid .title { font-size: 1.5rem; font-weight: 800; color: #fff; line-height: 1.1; }
+    .card-kip .foot { display: flex; justify-content: space-between; align-items: flex-end; }
+    .card-kip .foot .lbl { font-size: 0.45rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgba(255,255,255,0.3); }
+    .card-kip .foot .val { font-size: 0.75rem; font-weight: 700; color: #fff; }
+    .card-kip .stripe { position: absolute; left: 0; right: 0; bottom: 0; height: 4px; background: linear-gradient(90deg, var(--merah), var(--oranye), var(--mint), var(--biru)); }
+    .card-kip .shine { position: absolute; top: -30%; left: -20%; width: 40%; height: 160%; background: linear-gradient(75deg, transparent 30%, rgba(255,255,255,0.06) 50%, transparent 70%); transform: rotate(20deg); animation: shine 7s ease-in-out infinite; }
+    @keyframes shine { 0%, 20% { left: -20%; } 40%, 100% { left: 120%; } }
+
+    .stats { display: flex; margin-top: 24px; border-top: 1px solid var(--abu2); border-bottom: 1px solid var(--abu2); }
+    .stat { flex: 1; text-align: center; padding: 14px 4px; border-right: 1px solid var(--abu2); }
+    .stat:last-child { border-right: none; }
+    .stat-num { font-size: 1.5rem; font-weight: 900; color: var(--oranye); }
+    .stat-lbl { font-size: 0.65rem; color: var(--abu3); margin-top: 2px; }
+
+    .tentang-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; width: 100%; box-sizing: border-box; }
+    .tentang-card { background: var(--abu1); border-radius: 16px; padding: 16px; border-left: 4px solid var(--biru); box-sizing: border-box; }
+    .tentang-card .num { font-size: 1.8rem; font-weight: 900; color: var(--ungu); }
+    .tentang-card .desc { font-size: 0.9rem; color: var(--abu3); line-height: 1.5; margin-top: 4px; }
+    .tentang-lead { font-size: 0.9375rem; line-height: 1.75; font-family: var(--font); color: var(--abu4); }
+    .tentang-lead strong { color: var(--merah); }
+    details.law { margin: 16px 0; }
+    details.law summary { cursor: pointer; font-weight: 600; color: var(--biru); list-style: none; display: flex; align-items: center; gap: 8px; }
+    details.law summary::-webkit-details-marker { display: none; }
+    details.law[open] summary { margin-bottom: 8px; }
+    .law-body { color: var(--abu3); line-height: 1.75; font-size: 0.9375rem; padding-top: 12px; }
+    .law-body p { margin-bottom: 12px; }
+    .uu-badge { display: inline-flex; align-items: center; gap: 8px; background: var(--abu1); padding: 8px 18px; border-radius: 40px; font-weight: 600; font-size: 0.875rem; font-family: var(--font); color: var(--ungu); margin-top: 12px; }
+    .uu-badge i { color: var(--biru); }
+
+    .tl { position: relative; padding-left: 24px; margin-top: 16px; }
+    .tl::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: var(--abu2); }
+    .tl-item { position: relative; padding-bottom: 20px; }
+    .tl-item:last-child { padding-bottom: 0; }
+    .tl-dot { position: absolute; left: -24px; top: 4px; width: 14px; height: 14px; border-radius: 50%; background: var(--abu2); border: 2px solid var(--putih); box-shadow: 0 0 0 2px var(--abu2); }
+    .tl-dot.buka { background: var(--oranye); border-color: var(--oranye); box-shadow: 0 0 0 2px var(--oranye); }
+    .tl-agenda { font-weight: 700; font-size: 1rem; color: var(--ungu); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .tl-tgl { font-size: 0.9rem; color: var(--abu3); margin-top: 2px; }
+    .tl-badge { background: var(--mint); color: var(--ungu); font-weight: 700; font-size: 0.6rem; padding: 2px 12px; border-radius: 30px; letter-spacing: 0.04em; }
+
+    .seleksi-block { background: var(--abu1); border-radius: 16px; padding: 16px; margin: 16px 0 0 0; width: 100%; box-sizing: border-box; display: block; }
+    .seleksi-block + .seleksi-block { margin-top: 12px; }
+    .seleksi-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .seleksi-header i { font-size: 1.2rem; color: var(--biru); }
+    .seleksi-header span { font-weight: 700; font-size: 1rem; font-family: var(--font); color: var(--ungu); }
+    .seleksi-header .mode { margin-left: auto; background: var(--oranye); color: var(--ungu); font-weight: 700; font-size: 0.6rem; padding: 2px 12px; border-radius: 30px; text-transform: uppercase; white-space: nowrap; }
+    .seleksi-item { border-left: 3px solid var(--merah); padding-left: 12px; margin-bottom: 12px; overflow-wrap: break-word; word-break: break-word; }
+    .seleksi-item:last-child { margin-bottom: 0; }
+    .seleksi-item .t { font-weight: 600; font-size: 0.9375rem; font-family: var(--font); color: var(--ungu); }
+    .seleksi-item .d { font-size: 0.9rem; color: var(--abu3); margin-top: 2px; line-height: 1.5; }
+
+    .alur { position: relative; padding-left: 40px; margin-top: 16px; }
+    .alur::before { content: ''; position: absolute; left: 14px; top: 8px; bottom: 8px; width: 2px; background: var(--abu2); }
+    .alur-item { position: relative; padding-bottom: 24px; }
+    .alur-item:last-child { padding-bottom: 0; }
+    .alur-num { position: absolute; left: -40px; top: 0; width: 34px; height: 34px; border-radius: 50%; background: var(--abu1); border: 2px solid var(--abu2); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: var(--ungu); }
+    .alur-num.ok { background: var(--mint); border-color: var(--mint); color: var(--ungu); }
+    .alur-item h4 { font-weight: 700; font-size: 1rem; font-family: var(--font); color: var(--ungu); margin-bottom: 2px; }
+    .alur-item p { font-size: 0.9375rem; font-family: var(--font); color: var(--abu3); line-height: 1.6; }
+    .alur-item a { color: var(--biru); font-weight: 600; }
+    .gratis-badge { display: inline-block; background: var(--oranye); color: var(--ungu); font-weight: 700; font-size: 0.7rem; padding: 4px 14px; border-radius: 30px; margin-top: 6px; }
+
+    .syarat-note { background: var(--abu1); border-left: 4px solid var(--biru); padding: 14px 18px; border-radius: 0 12px 12px 0; font-size: 0.9375rem; font-family: var(--font); color: var(--abu4); line-height: 1.6; margin-bottom: 20px; }
+    .syarat-grup { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--merah); margin: 16px 0 8px; }
+    .syarat-grup:first-of-type { margin-top: 0; }
+    .syarat-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 12px; background: var(--putih); border-radius: 10px; margin-bottom: 4px; border: 1px solid var(--abu2); }
+    .syarat-item:last-child { margin-bottom: 0; }
+    .syarat-no { min-width: 28px; height: 28px; border-radius: 50%; background: var(--biru); color: #fff; font-weight: 800; font-size: 0.75rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+    .syarat-no.alt { background: var(--oranye); color: var(--ungu); }
+    .syarat-teks { font-weight: 600; font-size: 0.9375rem; font-family: var(--font); color: var(--ungu); }
+    .syarat-ket { font-size: 0.875rem; font-family: var(--font); color: var(--abu3); margin-top: 2px; line-height: 1.5; }
+    .tag-tipe { display: inline-block; font-size: 0.55rem; font-weight: 700; padding: 2px 10px; border-radius: 30px; margin-left: 6px; vertical-align: middle; }
+    .tag-W { background: var(--merah); color: #fff; } .tag-O { background: var(--biru); color: #fff; } .tag-E { background: var(--oranye); color: var(--ungu); } .tag-A { background: var(--mint); color: var(--ungu); }
+    .syarat-footer { background: var(--abu1); border-radius: 12px; padding: 14px 18px; font-size: 0.875rem; font-family: var(--font); color: var(--abu3); line-height: 1.6; margin-top: 16px; }
+    .syarat-footer i { color: var(--biru); }
+
+    footer { background: var(--ungu); color: #fff; padding: 40px 0 32px; }
+    footer .brand { font-size: 1.2rem; font-weight: 800; color: var(--oranye); }
+    footer .addr { opacity: 0.5; font-size: 0.9375rem; font-family: var(--font); line-height: 1.7; margin: 8px 0 16px; }
+    footer .contact { display: flex; align-items: center; gap: 10px; font-size: 0.9375rem; font-family: var(--font); opacity: 0.6; margin-bottom: 6px; }
+    footer .contact i { color: var(--oranye); width: 20px; }
+    footer .contact a { color: #fff; }
+
+    .sticky-bar { position: fixed !important; bottom: 0 !important; left: 0; right: 0; background: var(--ungu); padding: 12px 20px; display: flex !important; align-items: center; justify-content: space-between; gap: 12px; z-index: 9999 !important; border-top: 2px solid var(--oranye); box-shadow: 0 -4px 24px rgba(19,3,88,0.4); }
+    .sticky-text { font-size: 0.8125rem; font-family: var(--font); color: rgba(255,255,255,0.6); line-height: 1.3; }
+    .sticky-text strong { display: block; font-size: 0.9375rem; font-family: var(--font); color: #fff; font-weight: 700; }
+    .btn-sticky { background: var(--oranye); color: var(--ungu); font-weight: 700; padding: 8px 20px; border-radius: 40px; font-size: 0.875rem; font-family: var(--font); border: none; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .btn-sticky:hover { transform: scale(1.04); }
+
+    @media (max-width: 600px) { .tentang-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 480px) { .hero h1 { font-size: 1.9rem; } .section { padding: 32px 0; } h2 { font-size: 1.5rem; } .wrap { padding: 0 16px; } }
+    @media (max-width: 400px) { .btn-sticky { font-size: 0.65rem; padding: 6px 12px; } .sticky-text strong { font-size: 0.8rem; } .sticky-text { font-size: 0.7rem; } .card-kip { max-width: 240px; padding: 14px 16px; } .card-kip .mid .title { font-size: 1.2rem; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <img src="https://raw.githubusercontent.com/admisi-utdi/assets/main/UTDI%201B.png" alt="UTDI" style="height:36px;width:auto;object-fit:contain;flex-shrink:0;">
+  <div>
+    <div class="nav-title">UTDI</div>
+    <div class="nav-sub">Universitas Teknologi Digital Indonesia</div>
+  </div>
+</nav>
+
+<div id="scale-wrap">
+  <div id="loading">
+    <div class="loader"></div>
+    <p>Memuat informasi beasiswa …</p>
+  </div>
+
+  <div id="app">
+
+    <!-- HERO -->
+    <div class="wrap hero">
+      <span class="label merah" id="hero-badge">BEASISWA PENUH 2026</span>
+      <h1 id="hero-judul">🎓 KIP Kuliah <span>UTDI 2026</span></h1>
+      <p class="tagline" id="hero-tagline">Kuliah di bidang teknologi dan bisnis digital tanpa terkendala biaya.</p>
+      <p class="hero-desc">Program KIP Kuliah memberikan kesempatan bagi lulusan SMA/SMK/MA yang memiliki potensi akademik baik dan keterbatasan ekonomi untuk menempuh pendidikan tinggi dengan dukungan biaya pendidikan serta bantuan biaya hidup.</p>
+      <div class="card-kip">
+        <div class="shine"></div>
+        <div class="row"><div class="chip"></div><div class="brand">UTDI</div></div>
+        <div class="mid"><div class="lbl">Kartu Indonesia Pintar</div><div class="title">Kuliah</div></div>
+        <div class="foot">
+          <div><div class="lbl">Penerima</div><div class="val">Mahasiswa UTDI</div></div>
+          <div style="text-align:right"><div class="lbl">Masa aktif</div><div class="val">8 Semester</div></div>
+        </div>
+        <div class="stripe"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="stat-num" id="h-s1">450+</div><div class="stat-lbl" id="h-l1">Mahasiswa aktif</div></div>
+        <div class="stat"><div class="stat-num" id="h-s2">8 Sem</div><div class="stat-lbl" id="h-l2">Durasi beasiswa</div></div>
+        <div class="stat"><div class="stat-num" id="h-s3">Rp0</div><div class="stat-lbl" id="h-l3">Biaya daftar</div></div>
+      </div>
+      <a href="#" id="hero-btn" class="btn-primary" target="_blank">Daftar Sekarang <i class="ti ti-arrow-right"></i></a>
+    </div>
+
+    <!-- TENTANG -->
+    <div class="wrap section">
+      <span class="label biru">Dasar Hukum</span>
+      <h2>Tentang KIP Kuliah</h2>
+      <div class="tentang-grid">
+        <div class="tentang-card"><div class="num">2012</div><div class="desc">UU Pendidikan Tinggi mewajibkan negara menjamin akses kuliah</div></div>
+        <div class="tentang-card"><div class="num">2020</div><div class="desc">KIP Kuliah resmi hadir sebagai bantuan penuh dari pemerintah</div></div>
+      </div>
+      <p class="tentang-lead">KIP Kuliah adalah wujud hadirnya negara dalam <strong>Program Indonesia Pintar (PIP)</strong> — membebaskan biaya kuliah dan memberi bantuan biaya hidup bulanan bagi mahasiswa dari keluarga kurang mampu yang memenuhi syarat ekonomi dan akademik.</p>
+      <details class="law">
+        <summary>Baca dasar hukum lengkap</summary>
+        <div class="law-body">
+          <p>Berdasarkan <strong>UU No. 12/2012 tentang Pendidikan Tinggi</strong>, Pemerintah Indonesia berkewajiban meningkatkan akses dan kesempatan belajar di Perguruan Tinggi serta menyiapkan insan Indonesia yang cerdas dan kompetitif. Oleh karena itu Pemerintah akan selalu berupaya untuk menjamin, bahwa anak Indonesia yang kurang mampu terutama yang memiliki prestasi akan dapat terus menempuh pendidikan hingga jenjang kuliah melalui Program Indonesia Pintar (PIP).</p>
+          <p>PIP adalah bantuan berupa uang tunai, perluasan akses, dan kesempatan belajar dari pemerintah yang diberikan kepada peserta didik dan mahasiswa yang berasal dari keluarga miskin atau rentan miskin untuk membiayai pendidikan.</p>
+          <p>Melalui PIP di tahun 2020, pemerintah memberikan bantuan pendidikan bagi mahasiswa yang diterima di perguruan tinggi termasuk penyandang disabilitas dalam bentuk Kartu Indonesia Pintar Kuliah (KIP Kuliah) sebagai bukti kehadiran negara untuk membantu warganya memperoleh hak pendidikan tinggi.</p>
+        </div>
+      </details>
+      <div class="uu-badge"><i class="ti ti-scale"></i> UU No. 12/2012 tentang Pendidikan Tinggi</div>
+    </div>
+
+    <!-- MANFAAT -->
+    <div class="wrap section">
+      <span class="label oranye">Yang Kamu Dapat</span>
+      <h2 id="manfaat-title">Apa Keuntungan KIP Kuliah?</h2>
+      <div class="seleksi-block">
+        <div class="seleksi-header"><i class="ti ti-gift"></i><span>Keuntungan program</span><span class="mode">KIP Kuliah</span></div>
+        <div id="manfaat-list">
+          <div class="seleksi-item"><div class="t">Biaya pendidikan ditanggung pemerintah</div><div class="d">Biaya pendidikan ditanggung pemerintah selama masa studi berlangsung</div></div>
+          <div class="seleksi-item"><div class="t">Bantuan biaya hidup</div><div class="d">Mendapat bantuan biaya hidup sesuai ketentuan program</div></div>
+          <div class="seleksi-item"><div class="t">Berlaku di perguruan tinggi swasta</div><div class="d">Dapat digunakan untuk kuliah di PTS yang menerima KIP Kuliah</div></div>
+          <div class="seleksi-item"><div class="t">Karier lebih baik</div><div class="d">Kesempatan meraih pendidikan tinggi dan karier yang lebih baik</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MENGAPA UTDI -->
+    <div class="wrap section">
+      <span class="label ungu">Pilihan Tepat</span>
+      <h2 id="utdi-title">Mengapa Memilih UTDI?</h2>
+      <div class="seleksi-block">
+        <div class="seleksi-header"><i class="ti ti-building-community"></i><span>Keunggulan UTDI</span><span class="mode">Sejak 1979</span></div>
+        <div id="utdi-grid">
+          <div class="seleksi-item"><div class="t">Kampus teknologi berpengalaman</div><div class="d">Berdiri sejak 1979, UTDI telah menghasilkan ribuan lulusan di bidang teknologi digital</div></div>
+          <div class="seleksi-item"><div class="t">Program studi relevan industri</div><div class="d">Program studi yang relevan dengan kebutuhan industri digital saat ini dan masa depan</div></div>
+          <div class="seleksi-item"><div class="t">Pembelajaran berbasis praktik</div><div class="d">Kurikulum berbasis praktik dan proyek nyata yang mempersiapkan mahasiswa siap kerja</div></div>
+          <div class="seleksi-item"><div class="t">Dukungan karier mahasiswa</div><div class="d">Dukungan pengembangan kompetensi dan karier mahasiswa selama dan setelah studi</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JADWAL -->
+    <div class="wrap section">
+      <span class="label merah">Lini Masa</span>
+      <h2>Jadwal pendaftaran 2026</h2>
+      <p class="sub">Bersifat tentatif, dapat berubah sewaktu-waktu</p>
+      <div class="tl" id="jadwal-list"></div>
+    </div>
+
+    <!-- SELEKSI -->
+    <div class="wrap section">
+      <span class="label ungu">Tahap Seleksi</span>
+      <h2>Wawancara &amp; tes potensi</h2>
+      <p class="sub">Keduanya dilakukan sepenuhnya daring</p>
+      <div class="seleksi-block">
+        <div class="seleksi-header"><i class="ti ti-microphone"></i><span>Wawancara</span><span class="mode">Daring</span></div>
+        <div class="seleksi-item"><div class="t">Motivasi kuliah &amp; tujuan masa depan</div><div class="d">Apa yang mendorong memilih UTDI dan program studi ini</div></div>
+        <div class="seleksi-item"><div class="t">Komitmen menyelesaikan studi</div><div class="d">Keseriusan menjalani 8 semester penuh sebagai penerima KIP</div></div>
+        <div class="seleksi-item"><div class="t">Kondisi ekonomi keluarga</div><div class="d">Gambaran latar belakang ekonomi yang mendukung kelayakan beasiswa</div></div>
+        <div class="seleksi-item"><div class="t">Keseriusan mengikuti seluruh proses</div><div class="d">Kesiapan pemberkasan, registrasi, dan kewajiban penerima KIP</div></div>
+      </div>
+      <div class="seleksi-block">
+        <div class="seleksi-header"><i class="ti ti-brain"></i><span>Tes Potensi Akademik</span><span class="mode">Online</span></div>
+        <div class="seleksi-item"><div class="t">Kemampuan Verbal</div><div class="d">Pemahaman teks, sinonim, analogi kata</div></div>
+        <div class="seleksi-item"><div class="t">Kemampuan Numerik</div><div class="d">Aritmatika, deret angka, logika hitung</div></div>
+        <div class="seleksi-item"><div class="t">Kemampuan Penalaran</div><div class="d">Logika, pola, analisis permasalahan</div></div>
+        <div class="seleksi-item"><div class="t">Jadwal menyesuaikan urutan pendaftaran</div><div class="d">Semakin cepat mendaftar, semakin cepat dijadwalkan</div></div>
+      </div>
+    </div>
+
+    <!-- ALUR -->
+    <div class="wrap section">
+      <span class="label mint">8 Langkah</span>
+      <h2>Alur pendaftaran</h2>
+      <p class="sub">Seluruh proses, dari awal sampai akhir, gratis</p>
+      <div class="alur">
+        <div class="alur-item"><div class="alur-num">1</div><h4>Pendaftaran awal di UTDI</h4><p>Isi formulir di <a id="alur-link-1" href="#" target="_blank">utdi.id/kip-kuliah</a>. Langkah pertama yang wajib.</p></div>
+        <div class="alur-item"><div class="alur-num">2</div><h4>Cek email &amp; WhatsApp</h4><p>Cek email/WA untuk Token Validation dan Bukti Daftar KIP (PDF). Di PDF ada link grup WA — masuk perlu approval admin.</p></div>
+        <div class="alur-item"><div class="alur-num">3</div><h4>Pantau pembukaan jalur PTS Mandiri</h4><p>Ikuti info terkini di grup WA mengenai pembukaan jalur seleksi mandiri pemerintah.</p></div>
+        <div class="alur-item"><div class="alur-num">4</div><h4>Daftar di Kemendikbud</h4><p>Setelah ada instruksi, daftar di <a href="https://kip-kuliah.kemdikbud.go.id/" target="_blank">kip-kuliah.kemdikbud.go.id</a> jalur mandiri PTS.</p></div>
+        <div class="alur-item"><div class="alur-num">5</div><h4>Seleksi online</h4><p>Wawancara motivasi &amp; TPA dilakukan daring sesuai urutan pendaftaran.</p></div>
+        <div class="alur-item"><div class="alur-num">6</div><h4>Verifikasi berkas</h4><p>Calon yang lolos diminta mengunggah dokumen secara digital.</p></div>
+        <div class="alur-item"><div class="alur-num">7</div><h4>Registrasi PMB UTDI</h4><p>Daftar di <a href="https://pmb.utdi.ac.id" target="_blank">pmb.utdi.ac.id</a> setelah ada instruksi dari panitia.</p></div>
+        <div class="alur-item"><div class="alur-num ok"><i class="ti ti-check"></i></div><h4>Penetapan &amp; NIM</h4><p>Dapatkan SK Penetapan KIP dan Nomor Induk Mahasiswa — lalu siap kuliah!</p><span class="gratis-badge">Seluruh proses GRATIS</span></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="wrap section">
+      <span class="label ungu">Selanjutnya</span>
+      <h2 id="cta-judul">Jangan Biarkan Biaya Menghalangi Masa Depanmu</h2>
+      <div class="seleksi-block">
+        <div class="seleksi-header">
+          <i class="ti ti-rocket"></i>
+          <span>Mulai perjalananmu</span>
+          <span class="mode">Gratis</span>
+        </div>
+        <div class="seleksi-item">
+          <div class="d" id="cta-desc">Jika kamu memiliki semangat belajar, prestasi, dan keinginan untuk berkembang di dunia teknologi, manfaatkan kesempatan melalui program KIP Kuliah di UTDI.</div>
+        </div>
+        <div class="seleksi-item">
+          <div class="d" id="cta-sub">Daftar sekarang melalui PMB UTDI dan pilih <strong style="color:var(--ungu)">Jalur KIP Kuliah</strong>.</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;">
+        <a href="#" id="cta-btn" class="btn-primary" target="_blank">
+          <span id="cta-btn-teks">DAFTAR KIP KULIAH</span>
+          <i class="ti ti-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- SYARAT -->
+    <div class="wrap section">
+      <span class="label merah">Berkas</span>
+      <h2>Syarat &amp; berkas pendaftaran</h2>
+      <p class="sub">Siapkan dokumen berikut sebelum mendaftar</p>
+      <div class="syarat-note">Wajib memiliki <strong>minimal salah satu</strong> kriteria ekonomi (no. 1–7). Jika tidak, gunakan jalur Surat Keterangan Penghasilan + SKTM (no. 8).</div>
+      <div id="syarat-list"></div>
+      <div class="syarat-footer"><i class="ti ti-file-description"></i> Semua dokumen di-scan <strong>asli</strong>, digabung jadi <strong>1 file PDF</strong> per mahasiswa, urutan sesuai nomor di atas.</div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="wrap">
+        <div class="brand">UTDI — KIP Kuliah 2026</div>
+        <div class="addr">Jl. Majapahit No. 143, Karangjambe<br>Banguntapan, Bantul, Yogyakarta 55198</div>
+        <div class="contact"><i class="ti ti-world"></i><a href="https://www.utdi.ac.id" target="_blank">www.utdi.ac.id</a></div>
+        <div class="contact"><i class="ti ti-mail"></i><a href="mailto:admisi@utdi.ac.id">admisi@utdi.ac.id</a></div>
+        <div class="contact"><i class="ti ti-phone"></i><span>08174106654 (Kuindra Iriyanta)</span></div>
+      </div>
+    </footer>
+
+  </div><!-- /app -->
+</div><!-- /scale-wrap -->
+
+<script>
+  (function createSticky() {
+    var bar = document.createElement('div');
+    bar.className = 'sticky-bar';
+    bar.id = 'sticky-bar-el';
+    bar.innerHTML = '<div class="sticky-text"><strong>KIP Kuliah UTDI 2026</strong>Pendaftaran dibuka · Gratis</div>' +
+      '<a href="#" id="sticky-btn" class="btn-sticky" target="_blank">Daftar Sekarang</a>';
+    document.body.appendChild(bar);
+  })();
+
+  function applyScale() {
+    var wrap = document.getElementById('scale-wrap');
+    wrap.style.transform = 'none';
+    wrap.style.width = '100%';
+  }
+  applyScale();
+  window.addEventListener('resize', applyScale);
+
+  function renderJadwal(data) {
+    var el = document.getElementById('jadwal-list');
+    if (!el) return;
+    el.innerHTML = data.map(function(d) {
+      var buka = d.status && d.status.toUpperCase() === 'BUKA';
+      return '<div class="tl-item">' +
+        '<div class="tl-dot' + (buka ? ' buka' : '') + '"></div>' +
+        '<div class="tl-agenda">' + (d.agenda||'') + (buka ? ' <span class="tl-badge">BUKA</span>' : '') + '</div>' +
+        '<div class="tl-tgl">' + (d.tanggal||'') + ' · ' + (d.keterangan||'') + '</div>' +
+        '</div>';
+    }).join('');
+  }
+
+  function renderSyarat(data) {
+    var el = document.getElementById('syarat-list');
+    if (!el) return;
+    var groups = { EKONOMI: 'Kriteria ekonomi (wajib minimal 1 dari 7)', ALTERNATIF: 'Jalur alternatif', WAJIB: 'Dokumen wajib', OPSIONAL: 'Dokumen tambahan' };
+    var html = '', cur = '';
+    data.forEach(function(item) {
+      var tipe = item.tipe || '';
+      if (tipe !== cur) { cur = tipe; html += '<div class="syarat-grup">' + (groups[tipe]||tipe) + '</div>'; }
+      var isAlt = tipe === 'ALTERNATIF';
+      var bc = tipe==='WAJIB'?'W':tipe==='OPSIONAL'?'O':tipe==='EKONOMI'?'E':'A';
+      html += '<div class="syarat-item">' +
+        '<div class="syarat-no' + (isAlt?' alt':'') + '">' + (item.no||'') + '</div>' +
+        '<div><div class="syarat-teks">' + (item.dokumen||'') + '<span class="tag-tipe tag-' + bc + '">' + tipe + '</span></div>' +
+        (item.keterangan ? '<div class="syarat-ket">' + item.keterangan + '</div>' : '') +
+        '</div></div>';
+    });
+    el.innerHTML = html;
+  }
+
+  function renderAlur(data) {
+    var el = document.querySelector('.alur');
+    if (!el) return;
+    el.innerHTML = data.map(function(item, i) {
+      var isLast = i === data.length - 1;
+      return '<div class="alur-item">' +
+        '<div class="alur-num' + (isLast ? ' ok' : '') + '">' +
+        (isLast ? '<i class="ti ti-check"></i>' : (item.no || (i+1))) +
+        '</div>' +
+        '<h4>' + (item.judul||'') + '</h4>' +
+        '<p>' + (item.deskripsi||'') + '</p>' +
+        (isLast ? '<span class="gratis-badge">Seluruh proses GRATIS</span>' : '') +
+        '</div>';
+    }).join('');
+  }
+
+  function renderCTA(c, heroLink) {
+    if (!c || !c.judul) return;
+    var s = function(id,v){ var e=document.getElementById(id); if(e) e.textContent = v||''; };
+    var h = function(id,v){ var e=document.getElementById(id); if(e) e.innerHTML   = v||''; };
+    s('cta-judul',    c.judul);
+    h('cta-desc',     c.deskripsi || '');
+    h('cta-sub',      (c.sub||'').replace('Jalur KIP Kuliah','<strong style="color:var(--ungu)">Jalur KIP Kuliah</strong>'));
+    s('cta-btn-teks', c.btn_teks || 'DAFTAR KIP KULIAH');
+    // Selalu ambil dari CONFIG_HERO B13 (heroLink), abaikan cta.btn_link
+    var link = heroLink || 'https://utdi.id/kip-kuliah';
+    ['cta-btn','sticky-btn'].forEach(function(id){
+      var e = document.getElementById(id); if (e) e.href = link;
+    });
+  }
+
+  function stripEmoji(str) {
+    str = str.trim();
+    var cp = str.codePointAt(0);
+    if (!cp) return { emoji: '', title: str };
+    var isEmoji = (cp >= 0x1F000 && cp <= 0x1FFFF) ||
+                  (cp >= 0x2600  && cp <= 0x27BF)  ||
+                  (cp >= 0xFE00  && cp <= 0xFE0F)  ||
+                  cp === 0x2705 || cp === 0x274C || cp === 0x2714;
+    if (!isEmoji) return { emoji: '', title: str };
+    var len = cp > 0xFFFF ? 2 : 1;
+    var rest = str.slice(len);
+    if (rest.codePointAt(0) === 0xFE0F) rest = rest.slice(1);
+    return { emoji: str.slice(0, str.length - rest.trimStart().length), title: rest.trimStart() };
+  }
+
+  function renderUTDI(u) {
+    if (!u) return;
+    var t = document.getElementById('utdi-title');
+    if (t && u.title) t.textContent = u.title;
+    if (!u.items || !u.items.length) return;
+    var el = document.getElementById('utdi-grid');
+    if (!el) return;
+    el.innerHTML = u.items.map(function(item) {
+      var p = stripEmoji(item.judul || '');
+      return '<div class="seleksi-item"><div class="t">'+p.title+'</div><div class="d">'+(item.deskripsi||'')+'</div></div>';
+    }).join('');
+  }
+
+  function renderManfaat(m) {
+    if (!m) return;
+    var t = document.getElementById('manfaat-title');
+    if (t && m.title) t.textContent = m.title;
+    if (!m.items || !m.items.length) return;
+    var el = document.getElementById('manfaat-list');
+    if (!el) return;
+    el.innerHTML = m.items.map(function(item) {
+      var p = stripEmoji(item.judul || '');
+      return '<div class="seleksi-item"><div class="t">'+p.title+'</div><div class="d">'+(item.deskripsi||'')+'</div></div>';
+    }).join('');
+  }
+
+  function renderHero(h) {
+    var s = function(id,v){var e=document.getElementById(id);if(e)e.textContent=v||'';};
+    var a = function(id,attr,v){var e=document.getElementById(id);if(e)e.setAttribute(attr,v||'#');};
+    s('hero-badge', h.badge_teks);
+    var judul = document.getElementById('hero-judul');
+    if (judul && h.judul_baris1) judul.innerHTML = (h.judul_baris1||'') + ' <span>' + (h.judul_baris2||'') + '</span>';
+    s('hero-tagline', h.tagline);
+    s('h-s1', h.stat_mahasiswa); s('h-l1', h.stat_label1);
+    s('h-s2', h.stat_semester);  s('h-l2', h.stat_label2);
+    s('h-s3', h.stat_biaya);     s('h-l3', h.stat_label3);
+    // Satu sumber kebenaran: CONFIG_HERO B13
+    var link = h.link_daftar || 'https://utdi.id/kip-kuliah';
+    ['hero-btn','cta-btn','sticky-btn'].forEach(function(id){
+      a(id,'href',link);
+    });
+    var btn = document.getElementById('hero-btn');
+    if (btn && h.btn_teks) btn.innerHTML = h.btn_teks + ' <i class="ti ti-arrow-right"></i>';
+    // Update link di teks alur step 1
+    var alurLink = document.getElementById('alur-link-1');
+    if (alurLink) alurLink.href = link;
+  }
+
+  var GAS_URL = 'https://script.google.com/macros/s/AKfycbzBgCvatK9Dj0iRds6mDWhq28OeUanr_5f8ePDqrwGbKy7mIaDGWA12z0dP3n_QOmdo/exec';
+
+  function kipCallback(config) {
+    renderHero(config.hero || {});
+    renderJadwal(config.jadwal || []);
+    renderSyarat(config.syarat || []);
+    if (config.alur && config.alur.length) renderAlur(config.alur);
+    // Satu sumber link: CONFIG_HERO B13
+    var heroLink = (config.hero && config.hero.link_daftar) || 'https://utdi.id/kip-kuliah';
+    if (config.cta && config.cta.judul) {
+      renderCTA(config.cta, heroLink);
+    } else {
+      // Fallback: semua tombol ke heroLink
+      ['cta-btn','sticky-btn','hero-btn'].forEach(function(id){
+        var e = document.getElementById(id); if (e) e.href = heroLink;
+      });
+    }
+    if (config.utdi)    renderUTDI(config.utdi);
+    if (config.manfaat) renderManfaat(config.manfaat);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  (function load() {
+    var s = document.createElement('script');
+    s.src = GAS_URL + '?mode=jsonp&callback=kipCallback';
+    s.onerror = function() {
+      document.getElementById('loading').innerHTML = '<p style="color:#B72818;padding:20px;text-align:center">Gagal memuat data.<br>Refresh halaman.</p>';
+    };
+    document.head.appendChild(s);
+  })();
+</script>
+</body>
+</html>
